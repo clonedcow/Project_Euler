@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1405023157 source:c:\users\fangzhou\documents\project euler\102 triangle containment\main.cpp
+	<iostream>
+	<fstream>
+
