@@ -1,0 +1,31 @@
+private void zeckendorfSum() {
+        List<Long> fib = new ArrayList<>();
+        fib.add(1L);
+        fib.add(2L);
+
+        List<Long> zeckSum = new ArrayList<>();
+        zeckSum.add(1L);
+        zeckSum.add(2L);
+        
+        for(int i=1; fib.get(i)<100000000000000000L; i++) {
+            fib.add(fib.get(i)+fib.get(i-1));
+            // System.out.println("fib="+fib.get(i+1));
+            zeckSum.add(zeckSum.get(i)+zeckSum.get(i-1)-1+fib.get(i-1));
+            // System.out.println("zeckSum="+zeckSum.get(i+1));
+        }
+        
+        long rem = 99999999999999999L;
+        long targetZeckSum = 0L;
+        long fibsInNum = 0;
+        for(int i=fib.size()-1; rem>0; i--) {
+            long currFib = fib.get(i);
+            if(rem >= currFib) {
+                rem -= currFib;
+                targetZeckSum += zeckSum.get(i) + (fib.get(i)*fibsInNum);
+                fibsInNum++;
+            }
+        }
+        
+        System.out.println(targetZeckSum);
+        return;
+    }
