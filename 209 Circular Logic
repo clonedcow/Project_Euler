@@ -1,0 +1,45 @@
+private List<List<Integer>> inputRings = new ArrayList<>();
+private Set<Integer> usedInputs = new HashSet<>();
+private List<Long> fib = new ArrayList<>();
+
+private void countTables() {
+        for(int startInput=0; startInput<64; startInput++) {
+            if(!usedInputs.contains(startInput)) {
+                List<Integer> inputRing = new ArrayList<>();
+                inputRing.add(startInput);
+                usedInputs.add(startInput);
+                
+                int currInput = startInput;
+                while((currInput = computeNextInput(currInput)) != startInput) {
+                    inputRing.add(currInput);
+                    usedInputs.add(currInput);
+                }
+                
+                inputRings.add(inputRing);
+            }
+        }
+        System.out.println(inputRings);
+        
+        long tables = 1;
+        for(List<Integer> inputRing : inputRings) {
+            int ringSize = inputRing.size();
+            tables *= (getFib(ringSize) + getFib(ringSize-2));
+        }
+        System.out.println(tables);
+    }
+    
+    private int computeNextInput(int n) {
+        boolean a = (0b100000 & n) > 0;
+        boolean b = (0b010000 & n) > 0;
+        boolean c = (0b001000 & n) > 0;
+        int newF = a ^ (b && c) ? 1 : 0;
+        return ((n << 1) & 0b111110) | newF;
+    }
+    
+    private long getFib(int i) {
+        if(i<0) return 0;
+        while(i>=fib.size()) {
+            fib.add(fib.get(fib.size()-1)+fib.get(fib.size()-2));
+        }
+        return fib.get(i);
+    }
