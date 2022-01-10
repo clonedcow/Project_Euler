@@ -1,0 +1,52 @@
+class Solution {
+    private static final int MAX_PRIME = 500000;
+    private boolean[] isPrime = new boolean[MAX_PRIME];
+    private int maxPrimeUsed;
+    
+    public int[] twoSum(int[] nums, int target) {
+        init();
+        genPrimes();
+        
+        return null;
+    }
+    
+    private void init() {
+        Arrays.fill(isPrime, true);
+    }
+    
+    private long minNumWithTwoPowFactors(int pow) {
+        return 0L;
+    }
+    
+    private void genPrimes() {
+        for(long p = 2; p<MAX_PRIME;) {
+            for(long comp = p*p; comp<MAX_PRIME; comp+=p) isPrime[(int)comp] = false;
+            do{
+                p++;
+            } while(p<MAX_PRIME && isPrime[(int)p]==false);
+        }
+    }
+    
+    private static class PrimePow implements Comparable<PrimePow> {
+        int base;
+        int pow;
+        double powLogBase;
+        
+        public PrimePow(int base, int pow) {
+            this.base = base;
+            this.pow = pow;
+            this.powLogBase = pow*Math.log(base);
+        }
+        
+        public double updatePow() {
+            pow *= 2;
+            powLogBase *= 2;
+            return powLogBase;
+        }
+        
+        @Override
+        public int compareTo(PrimePow other) {
+            return this.powLogBase>other.powLogBase ? 1 : -1;
+        }
+    }
+}
