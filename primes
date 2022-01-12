@@ -1,0 +1,15 @@
+List<Integer> primes;
+
+private void genPrimes(int maxPrime) {
+    primes = new ArrayList<>();
+    boolean[] isComposite = new boolean[maxPrime+1];
+
+    for(int testPrime = 2; testPrime<=maxPrime; testPrime++) {
+        if(!isComposite[testPrime]) {
+            primes.add(testPrime);
+            for(int marker = testPrime*testPrime; marker<=maxPrime; marker+=testPrime) {
+                isComposite[marker] = true;
+            }
+        }
+    }
+}
