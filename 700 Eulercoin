@@ -1,0 +1,14 @@
+long MULT = 1504170715041707L;
+long MOD =  4503599627370517L;
+
+long oldEulerCoin = MOD;
+long newEulerCoin = MULT;
+long eulerCoinSum = MULT;
+while(newEulerCoin!=1) {
+    long newestEulerCoin = (oldEulerCoin/newEulerCoin+1)*newEulerCoin-oldEulerCoin;
+    System.out.println(newestEulerCoin);
+    eulerCoinSum += newestEulerCoin;
+    oldEulerCoin = newEulerCoin;
+    newEulerCoin = newestEulerCoin;
+}
+System.out.println(eulerCoinSum);
