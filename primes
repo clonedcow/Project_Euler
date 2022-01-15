@@ -1,14 +1,17 @@
-List<Integer> primes;
+static List<Integer> primes;
+static Set<Integer> primeSet;
 
-private void genPrimes(int maxPrime) {
+private static void genPrimes(int maxPrime) {
     primes = new ArrayList<>();
+    primeSet = new HashSet<>();
     boolean[] isComposite = new boolean[maxPrime+1];
 
     for(int testPrime = 2; testPrime<=maxPrime; testPrime++) {
         if(!isComposite[testPrime]) {
             primes.add(testPrime);
-            for(int marker = testPrime*testPrime; marker<=maxPrime; marker+=testPrime) {
-                isComposite[marker] = true;
+            primeSet.add(testPrime);
+            for(long marker = (long)testPrime*(long)testPrime; marker<=maxPrime; marker+=testPrime) {
+                isComposite[(int)marker] = true;
             }
         }
     }
@@ -23,7 +26,7 @@ private static class PrimeFactorization {
             
             int primeIndex = 0;
             int prime = 2;
-            while(n!=1) {
+            while(n!=1 && !primeSet.contains(n)) {
                 int primeCount = 0;
                 while(n%prime == 0) {
                     n/=prime;
@@ -32,6 +35,9 @@ private static class PrimeFactorization {
                 if(primeCount>0) primeCounts.put(prime, primeCount);
                 
                 prime = primes.get(++primeIndex);
+            }
+            if(n!=1) {
+                primeCounts.put(n, 1);
             }
         }
         
@@ -58,5 +64,21 @@ private static class PrimeFactorization {
                 }
             }
             return this;
+        }
+        
+        public int countFactors() {
+            int factors = 1;
+            for(Map.Entry<Integer,Integer> primeCount : primeCounts.entrySet()) {
+                factors*=primeCount.getValue()+1;
+            }
+            return factors;
+        }
+        
+        public int computeValue() {
+            int value = 1;
+            for(Map.Entry<Integer,Integer> primeCount : primeCounts.entrySet()) {
+                value*= pow(primeCount.getKey(), primeCount.getValue());
+            }
+            return value;
         }
     }
