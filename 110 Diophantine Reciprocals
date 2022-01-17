@@ -1,0 +1,91 @@
+import java.util.*;
+
+public class MyClass {
+    private static final int DRS_COUNT = 1000;
+    
+    static PriorityQueue<DRSolution> drSolutions;
+    
+    public static void main(String args[]) {
+        genPrimes(100);
+        drSolutions = new PriorityQueue<>();
+        
+        List<Integer> firstDRSPows = new ArrayList<>();
+        firstDRSPows.add(1);
+        
+        DRSolution drs = new DRSolution(firstDRSPows, 2);
+        int solutions = 2;
+        while(drs.solutions < DRS_COUNT) {
+            printDrs(drs);
+            for(DRSolution newDrs : drs.computeNextDrs()) {
+                drSolutions.offer(newDrs);
+            }
+            drs = drSolutions.poll();
+        }
+        
+        printDrs(drs);
+    }
+    
+    private static void printDrs(DRSolution drs) {
+        System.out.println(drs.val + ", " + drs.primePows + ", " + drs.solutions);
+    }
+    
+    static List<Integer> primes;
+    static Set<Integer> primeSet;
+    
+    private static void genPrimes(int maxPrime) {
+        primes = new ArrayList<>();
+        primeSet = new HashSet<>();
+        boolean[] isComposite = new boolean[maxPrime+1];
+    
+        for(int testPrime = 2; testPrime<=maxPrime; testPrime++) {
+            if(!isComposite[testPrime]) {
+                primes.add(testPrime);
+                primeSet.add(testPrime);
+                for(long marker = (long)testPrime*(long)testPrime; marker<=maxPrime; marker+=testPrime) {
+                    isComposite[(int)marker] = true;
+                }
+            }
+        }
+    }
+    
+    private static class DRSolution implements Comparable<DRSolution> {
+        List<Integer> primePows;
+        long val;
+        long solutions;
+        DRSolution(List<Integer> primePows, long val) {
+            this.primePows = primePows;
+            this.val = val;
+            solutions = 1;
+            for(int pow : primePows) {
+                solutions *= pow*2+1;
+            }
+            solutions = (solutions+1)/2;
+        }
+        
+        @Override
+        public int compareTo(DRSolution other) {
+            return (this.solutions-other.solutions)>0 ? 1 : -1;
+        }
+        
+        public List<DRSolution> computeNextDrs() {
+            List<DRSolution> newDrs = new ArrayList<>();
+            int prevPow = -1;
+            
+            for(int powI = 0; powI < primePows.size(); powI++) {
+                int currPow = primePows.get(powI);
+                if(currPow!=prevPow) {
+                    List<Integer> newPrimePows = new ArrayList<>(primePows);
+                    newPrimePows.set(powI, currPow+1);
+                    prevPow = currPow;
+                    newDrs.add(new DRSolution(newPrimePows, val*primes.get(powI)));
+                }
+            }
+            List<Integer> newPrimePows = new ArrayList<>(primePows);
+            newPrimePows.add(1);
+            newDrs.add(new DRSolution(newPrimePows, val*primes.get(primePows.size())));
+            
+            
+            return newDrs;
+        }
+    }
+}
