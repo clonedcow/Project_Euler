@@ -3,11 +3,13 @@ import java.util.*;
 public class MyClass {
     private static final int DRS_COUNT = 1000;
     
-    static PriorityQueue<DRSolution> drSolutions;
+    private static PriorityQueue<DRSolution> drSolutions;
+    private static Set<Long> seenSolutions;
     
     public static void main(String args[]) {
         genPrimes(100);
         drSolutions = new PriorityQueue<>();
+        seenSolutions = new HashSet<>();
         
         List<Integer> firstDRSPows = new ArrayList<>();
         firstDRSPows.add(1);
@@ -17,7 +19,10 @@ public class MyClass {
         while(drs.solutions < DRS_COUNT) {
             printDrs(drs);
             for(DRSolution newDrs : drs.computeNextDrs()) {
-                drSolutions.offer(newDrs);
+                if(!seenSolutions.contains(newDrs.val)) {
+                    seenSolutions.add(newDrs.val);
+                    drSolutions.offer(newDrs);
+                }
             }
             drs = drSolutions.poll();
         }
@@ -64,7 +69,7 @@ public class MyClass {
         
         @Override
         public int compareTo(DRSolution other) {
-            return (this.solutions-other.solutions)>0 ? 1 : -1;
+            return (this.solutions-other.solutions)>0 ? -1 : 1;
         }
         
         public List<DRSolution> computeNextDrs() {
