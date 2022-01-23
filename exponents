@@ -1,6 +1,20 @@
-private double pow(double base, int exp) {
+private static double pow(double base, int exp) {
     int mask = 0b1000000000000000000000000000000;
     double ans = 1;
+    do {
+        ans = ans * ans;
+        if((mask&exp) != 0) {
+            ans*= base;
+        }
+        mask>>>=1;
+    } while(mask!=0);
+
+    return ans;
+}
+
+private static long pow(long base, int exp) {
+    int mask = 0b1000000000000000000000000000000;
+    long ans = 1;
     do {
         ans = ans * ans;
         if((mask&exp) != 0) {
