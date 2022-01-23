@@ -1,38 +1,29 @@
 import java.util.*;
 
 public class MyClass {
-    private static final int DRS_COUNT = 1000;
-    
-    private static PriorityQueue<DRSolution> drSolutions;
-    private static Set<Long> seenSolutions;
-    
     public static void main(String args[]) {
-        genPrimes(100);
-        drSolutions = new PriorityQueue<>();
-        seenSolutions = new HashSet<>();
+      genPrimes(100);
+
+      List<Integer> pows = List.of(3,3,2,2,1,1,1,1,1,1,1,1);
+      calcSolutions(pows);
+    }
+    
+    private static void calcSolutions(List<Integer> pows) {
+        long num = 1;
+        long solutions = 1;
         
-        List<Integer> firstDRSPows = new ArrayList<>();
-        firstDRSPows.add(1);
-        
-        DRSolution drs = new DRSolution(firstDRSPows, 2);
-        int solutions = 2;
-        while(drs.solutions < DRS_COUNT) {
-            printDrs(drs);
-            for(DRSolution newDrs : drs.computeNextDrs()) {
-                if(!seenSolutions.contains(newDrs.val)) {
-                    seenSolutions.add(newDrs.val);
-                    drSolutions.offer(newDrs);
-                }
-            }
-            drs = drSolutions.poll();
+        for(int i = 0; i<pows.size(); i++) {
+            int prime = primes.get(i);
+            int pow = pows.get(i);
+            num*=pow(prime, pow);
+            solutions*=(pow*2+1);
         }
         
-        printDrs(drs);
+        System.out.println(primes);
+        System.out.println(pows);
+        System.out.println("num=" + num +", solutions=" + (solutions+1)/2);
     }
     
-    private static void printDrs(DRSolution drs) {
-        System.out.println(drs.val + ", " + drs.primePows + ", " + drs.solutions);
-    }
     
     static List<Integer> primes;
     static Set<Integer> primeSet;
@@ -53,44 +44,17 @@ public class MyClass {
         }
     }
     
-    private static class DRSolution implements Comparable<DRSolution> {
-        List<Integer> primePows;
-        long val;
-        long solutions;
-        DRSolution(List<Integer> primePows, long val) {
-            this.primePows = primePows;
-            this.val = val;
-            solutions = 1;
-            for(int pow : primePows) {
-                solutions *= pow*2+1;
+    private static long pow(long base, int exp) {
+        int mask = 0b1000000000000000000000000000000;
+        long ans = 1;
+        do {
+            ans = ans * ans;
+            if((mask&exp) != 0) {
+                ans*= base;
             }
-            solutions = (solutions+1)/2;
-        }
-        
-        @Override
-        public int compareTo(DRSolution other) {
-            return (this.solutions-other.solutions)>0 ? -1 : 1;
-        }
-        
-        public List<DRSolution> computeNextDrs() {
-            List<DRSolution> newDrs = new ArrayList<>();
-            int prevPow = -1;
-            
-            for(int powI = 0; powI < primePows.size(); powI++) {
-                int currPow = primePows.get(powI);
-                if(currPow!=prevPow) {
-                    List<Integer> newPrimePows = new ArrayList<>(primePows);
-                    newPrimePows.set(powI, currPow+1);
-                    prevPow = currPow;
-                    newDrs.add(new DRSolution(newPrimePows, val*primes.get(powI)));
-                }
-            }
-            List<Integer> newPrimePows = new ArrayList<>(primePows);
-            newPrimePows.add(1);
-            newDrs.add(new DRSolution(newPrimePows, val*primes.get(primePows.size())));
-            
-            
-            return newDrs;
-        }
+            mask>>>=1;
+        } while(mask!=0);
+    
+        return ans;
     }
 }
