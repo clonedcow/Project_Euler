@@ -1,0 +1,108 @@
+import java.util.*;
+import java.lang.Math;
+import java.util.stream.Collectors;
+
+public class MyClass {
+    public static void main(String args[]) {
+        genPrimes(100000000);
+        primes = primes.stream()
+        .filter(prime -> hasUniqueDigits(prime))
+        .collect(Collectors.toList());
+        // System.out.println(primes.size());
+        
+        primesByDigitCount = new HashMap<>();
+        for(int i = 1; i<=9; i++) {
+            primesByDigitCount.put(i, new ArrayList<>());
+        }
+        for(int prime : primes) {
+            primesByDigitCount.get(countDigits(prime)).add(prime);
+        }
+        // System.out.println(primesByDigitCount);
+        
+        digitUsed = new boolean[10];
+        digitUsed[0] = true;
+        
+        System.out.println(countPandigitalPrimeSets(9, Integer.MAX_VALUE, new HashSet<>()));
+    }
+    
+    private static int countPandigitalPrimeSets(int remDigits, int maxNum, Set<Integer> pandigitalSet) {
+        if(remDigits == 0) {
+            // System.out.println(pandigitalSet);
+            return 1;
+        }
+        int solutions = 0;
+        for(int digits = Math.min(remDigits, countDigits(maxNum)); digits>0; digits--) {
+            List<Integer> primesWithDigitCount = primesByDigitCount.get(digits);
+            // System.out.println(primesWithDigitCount);
+            for(int prime : primesWithDigitCount) {
+                if(pandigitalAllows(prime) && prime<maxNum) {
+                    markUsed(prime, true);
+                    pandigitalSet.add(prime);
+                    solutions += countPandigitalPrimeSets(remDigits-digits, prime, pandigitalSet);
+                    pandigitalSet.remove(prime);
+                    markUsed(prime, false);
+                }
+            }
+        }
+        return solutions;
+    }
+    
+    private static boolean hasUniqueDigits(int n) {
+        boolean[] used = new boolean[10];
+        while(n!=0) {
+            int digit = n%10;
+            if(used[digit]) return false;
+            used[digit] = true;
+            n/=10;
+        }
+        return true;
+    }
+    
+    private static boolean pandigitalAllows(int n) {
+        while(n!=0) {
+            int digit = n%10;
+            if(digitUsed[digit]) return false;
+            n/=10;
+        }
+        return true;
+    }
+    
+    private static void markUsed(int n, boolean val) {
+        while(n!=0) {
+            int digit = n%10;
+            digitUsed[digit] = val;
+            n/=10;
+        }
+    }
+    
+    private static int countDigits(int n) {
+        int digits = 0;
+        while(n!=0) {
+            digits++;
+            n/=10;
+        }
+        return digits;
+    }
+    
+    
+    static List<Integer> primes;
+    static Set<Integer> primeSet;
+    static Map<Integer, List<Integer>> primesByDigitCount;
+    static boolean[] digitUsed;
+    
+    private static void genPrimes(int maxPrime) {
+        primes = new ArrayList<>();
+        primeSet = new HashSet<>();
+        boolean[] isComposite = new boolean[maxPrime+1];
+    
+        for(int testPrime = 2; testPrime<=maxPrime; testPrime++) {
+            if(!isComposite[testPrime]) {
+                primes.add(testPrime);
+                primeSet.add(testPrime);
+                for(long marker = (long)testPrime*(long)testPrime; marker<=maxPrime; marker+=testPrime) {
+                    isComposite[(int)marker] = true;
+                }
+            }
+        }
+    }
+}
