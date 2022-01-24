@@ -1,0 +1,131 @@
+import java.util.*;
+
+public class MyClass {
+    public static void main(String args[]) {
+        genPrimes(200);
+        multsRequired = new ArrayList<>();
+        multsRequired.add(0);
+        multsRequired.add(0);
+        
+        int totalMults = 0;
+        for(int n = 2; n<=200; n++) {
+            if(primeSet.contains(n)) {
+                multsRequired.add(multsRequired.get(n-1)+1);
+            } else {
+                PrimeFactorization pf = new PrimeFactorization(n);
+                
+                int mults = 0;
+                for(Map.Entry<Integer,Integer> primeCount : pf.primeCounts.entrySet()) {
+                    int prime = primeCount.getKey();
+                    int count = primeCount.getValue();
+                    mults += multsRequired.get(prime)*count;
+                }
+                totalMults += mults;
+                multsRequired.add(mults);
+            }
+        }
+        
+        System.out.println(totalMults);
+        System.out.println(multsRequired);
+    }
+   
+    static List<Integer> multsRequired;
+   
+    static List<Integer> primes;
+    static Set<Integer> primeSet;
+    
+    private static void genPrimes(int maxPrime) {
+        primes = new ArrayList<>();
+        primeSet = new HashSet<>();
+        boolean[] isComposite = new boolean[maxPrime+1];
+    
+        for(int testPrime = 2; testPrime<=maxPrime; testPrime++) {
+            if(!isComposite[testPrime]) {
+                primes.add(testPrime);
+                primeSet.add(testPrime);
+                for(long marker = (long)testPrime*(long)testPrime; marker<=maxPrime; marker+=testPrime) {
+                    isComposite[(int)marker] = true;
+                }
+            }
+        }
+    }
+    
+    private static class PrimeFactorization {
+        public Map<Integer,Integer> primeCounts;
+        
+        PrimeFactorization(int n) {
+            primeCounts = new HashMap<>();
+            
+            int primeIndex = 0;
+            int prime = 2;
+            while(n!=1 && !primeSet.contains(n)) {
+                int primeCount = 0;
+                while(n%prime == 0) {
+                    n/=prime;
+                    primeCount++;
+                }
+                if(primeCount>0) primeCounts.put(prime, primeCount);
+                
+                prime = primes.get(++primeIndex);
+            }
+            if(n!=1) {
+                primeCounts.put(n, 1);
+            }
+        }
+        
+        public PrimeFactorization multiply(PrimeFactorization other) {
+            for(Map.Entry<Integer,Integer> otherPrimeCount : other.primeCounts.entrySet()) {
+                int prime = otherPrimeCount.getKey();
+                Integer thisCount = this.primeCounts.get(prime);
+                if(thisCount==null) thisCount = 0;
+                this.primeCounts.put(prime, thisCount+otherPrimeCount.getValue());
+            }
+            return this;
+        }
+        
+        public PrimeFactorization divide(PrimeFactorization other) {
+            for(Map.Entry<Integer,Integer> otherPrimeCount : other.primeCounts.entrySet()) {
+                int prime = otherPrimeCount.getKey();
+                Integer thisCount = this.primeCounts.get(prime);
+                if(thisCount==null) thisCount = 0;
+                int newCount = thisCount-otherPrimeCount.getValue();
+                if(newCount == 0) {
+                    this.primeCounts.remove(prime);
+                } else {
+                    this.primeCounts.put(prime, thisCount-otherPrimeCount.getValue());
+                }
+            }
+            return this;
+        }
+        
+        public int countFactors() {
+            int factors = 1;
+            for(Map.Entry<Integer,Integer> primeCount : primeCounts.entrySet()) {
+                factors*=primeCount.getValue()+1;
+            }
+            return factors;
+        }
+        
+        public int computeValue() {
+            int value = 1;
+            for(Map.Entry<Integer,Integer> primeCount : primeCounts.entrySet()) {
+                value*= pow(primeCount.getKey(), primeCount.getValue());
+            }
+            return value;
+        }
+    }
+    
+    private static long pow(long base, int exp) {
+        int mask = 0b1000000000000000000000000000000;
+        long ans = 1;
+        do {
+            ans = ans * ans;
+            if((mask&exp) != 0) {
+                ans*= base;
+            }
+            mask>>>=1;
+        } while(mask!=0);
+    
+        return ans;
+    }
+}
