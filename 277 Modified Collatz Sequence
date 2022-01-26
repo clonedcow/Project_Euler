@@ -1,0 +1,31 @@
+public class MyClass {
+    public static void main(String args[]) {
+        String pattern = "UDDDUdddDDUDDddDdDddDDUDDdUUDd";
+        // String pattern = "DdDddUUdDD";
+        
+        // (ax+c)/d
+        long xCoefficient = 1;
+        long constant = 0;
+        long denominator = 1;
+        for(int i = pattern.length()-1; i>=0; i--) {
+            switch(pattern.charAt(i)) {
+                case 'D':
+                    xCoefficient*=3;
+                    constant*=3;
+                    break;
+                case 'U':
+                    xCoefficient*=3;
+                    constant = 3*constant-2*denominator;
+                    denominator*=4;
+                    break;
+                case 'd':
+                    xCoefficient*=3;
+                    constant = 3*constant+denominator;
+                    denominator*=2;
+                    break;
+            }
+        }
+        
+        System.out.println("("+xCoefficient+"x+"+constant+")/"+denominator);
+    }
+}
