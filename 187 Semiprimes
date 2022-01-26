@@ -1,0 +1,48 @@
+import java.util.*;
+
+public class MyClass {
+    public static void main(String args[]) {
+        genPrimes(50000000);
+        int semiPrimes = 0;
+        for(int i=0; primes.get(i)*primes.get(i)<=100000000;i++) {
+            semiPrimes += findMaxPair(i, primes.size()-1, 100000000)-i+1;
+        }
+        
+        System.out.println(semiPrimes);
+    }
+    
+    static int findMaxPair(int lo, int hi, int prod) {
+        long p1 = primes.get(lo);
+        if(p1 * primes.get(hi) <= prod) return hi;
+        
+        while(lo<hi-1) {
+            int mid = (lo+hi)/2;
+            if(p1*primes.get(mid) <= prod) {
+                lo = mid;
+            } else {
+                hi = mid;
+            }
+        }
+        
+        return lo;
+    }
+    
+    static List<Integer> primes;
+    static Set<Integer> primeSet;
+    
+    private static void genPrimes(int maxPrime) {
+        primes = new ArrayList<>();
+        primeSet = new HashSet<>();
+        boolean[] isComposite = new boolean[maxPrime+1];
+    
+        for(int testPrime = 2; testPrime<=maxPrime; testPrime++) {
+            if(!isComposite[testPrime]) {
+                primes.add(testPrime);
+                primeSet.add(testPrime);
+                for(long marker = (long)testPrime*(long)testPrime; marker<=maxPrime; marker+=testPrime) {
+                    isComposite[(int)marker] = true;
+                }
+            }
+        }
+    }
+}
