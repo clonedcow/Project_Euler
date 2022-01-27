@@ -29,3 +29,15 @@ public class MyClass {
         System.out.println("("+xCoefficient+"x+"+constant+")/"+denominator);
     }
 }
+
+public class MyClass {
+    public static void main(String[] args) {
+        for(long n = 1000000L; n<1000100000000000L; n++) {
+            // if((n*4194304L-21110037246199L)%205891132094649L == 0) {
+            if((n*256L-87L)%59049L == 0) {
+                System.out.println(n);
+                return;
+            }
+        }
+    }
+}
