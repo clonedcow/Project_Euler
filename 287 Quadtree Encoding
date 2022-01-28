@@ -1,0 +1,49 @@
+public class MyClass {
+    private static long R = 1<<23;
+    
+    public static void main(String args[]) {
+        long encodingLength = 1;
+        encodingLength += encodingTopRightLength(R, R, R);
+        encodingLength += 2*encodingTopLeftLength(0, R, R);
+        encodingLength += encodingBotLeftLength(0, 0, R);
+        System.out.println(encodingLength);
+    }
+    
+    private static long encodingBotLeftLength(long x, long y, long size) {
+        if(inCircle(x, y) || !inCircle(x+size-1, y+size-1)) return 2;
+        long halfSize = size>>1;
+        int encodingLength = 1;
+        encodingLength += encodingBotLeftLength(x, y, halfSize);
+        encodingLength += encodingBotLeftLength(x, y+halfSize, halfSize);
+        encodingLength += encodingBotLeftLength(x+halfSize, y, halfSize);
+        encodingLength += encodingBotLeftLength(x+halfSize, y+halfSize, halfSize);
+        return encodingLength;
+    }
+    
+    private static long encodingTopLeftLength(long x, long y, long size) {
+        if(inCircle(x, y+size-1) || !inCircle(x+size-1,y)) return 2;
+        long halfSize = size>>1;
+        int encodingLength = 1;
+        encodingLength += encodingTopLeftLength(x, y, halfSize);
+        encodingLength += encodingTopLeftLength(x, y+halfSize, halfSize);
+        encodingLength += encodingTopLeftLength(x+halfSize, y, halfSize);
+        encodingLength += encodingTopLeftLength(x+halfSize, y+halfSize, halfSize);
+        return encodingLength;
+    }
+    
+    private static long encodingTopRightLength(long x, long y, long size) {
+        // System.out.println("("+x+","+y+") - "+size);
+        if(inCircle(x+size-1, y+size-1) || !inCircle(x,y)) return 2;
+        long halfSize = size>>1;
+        int encodingLength = 1;
+        encodingLength += encodingTopRightLength(x, y, halfSize);
+        encodingLength += encodingTopRightLength(x, y+halfSize, halfSize);
+        encodingLength += encodingTopRightLength(x+halfSize, y, halfSize);
+        encodingLength += encodingTopRightLength(x+halfSize, y+halfSize, halfSize);
+        return encodingLength;
+    }
+    
+    private static boolean inCircle(long x, long y) {
+        return (x-R)*(x-R) + (y-R)*(y-R) <= R*R;
+    }
+}
