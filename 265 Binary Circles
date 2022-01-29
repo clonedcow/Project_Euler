@@ -1,0 +1,34 @@
+import java.util.*;
+
+public class MyClass {
+    private static final int RING_SIZE = 32;
+    private static final int DIGITS = 5;
+    private static final boolean[] used = new boolean[RING_SIZE];
+    
+    public static void main(String args[]) {
+        used[0] = true;
+        System.out.println(countBinaryCircles(0, 0, 2));
+    }
+    
+    private static long countBinaryCircles(int window, long circleNum, int depth) {
+        // System.out.println(Integer.toBinaryString(n) + " - " + depth);
+        int shiftedWindow = (window<<1) & (~(1<<DIGITS));
+        long shiftedCircleNum = circleNum<<1;
+        if(depth==RING_SIZE+1) {
+            // System.out.println(Integer.toBinaryString(shiftedCircleNum));
+            return shiftedCircleNum>>DIGITS;
+        }
+        long circleSum = 0; 
+        if(!used[shiftedWindow]) {
+            used[shiftedWindow] = true;
+            circleSum += countBinaryCircles(shiftedWindow, shiftedCircleNum, depth+1);
+            used[shiftedWindow] = false;
+        }
+        if(!used[shiftedWindow+1] && depth<=(RING_SIZE-DIGITS+1)) {
+            used[shiftedWindow+1] = true;
+            circleSum += countBinaryCircles(shiftedWindow+1, shiftedCircleNum+1, depth+1);
+            used[shiftedWindow+1] = false;
+        }
+        return circleSum;
+    }
+}
