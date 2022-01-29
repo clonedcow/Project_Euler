@@ -1,0 +1,56 @@
+import java.util.*;
+
+public class MyClass {
+    public static void main(String[] args) {
+        // 4123
+        // ...
+        // 1243
+        // 3124
+        List<Long> hiFirstToLastMoves = new ArrayList<>();
+        hiFirstToLastMoves.add(0L);
+        hiFirstToLastMoves.add(0L);
+        for(int n=2; n<=30; n++) {
+            long prevMoves = hiFirstToLastMoves.get(n-1);
+            // ends up being 2^(n-1)-1;
+            hiFirstToLastMoves.add(prevMoves*2+1);
+        }
+        
+        
+        // 364 7 152
+        // 346 7 152
+        // 1346 7 52
+        // 51346 7 2
+        // 13456 7 2
+        // 213456 7
+        // 123456 7
+        
+        // 3 12456
+        List<Double> expectedRandFirstInsertMoves = new ArrayList<>();
+        expectedRandFirstInsertMoves.add(0.0);
+        expectedRandFirstInsertMoves.add(0.0);
+        
+        List<Double> expectedSortMoves = new ArrayList<>();
+        expectedSortMoves.add(0.0);
+        expectedSortMoves.add(0.0);
+        for(int n=2; n<=30; n++) {
+            double randFirstInsertMovesSum = 0;
+            for(int insertNum=2; insertNum<=n; insertNum++) {
+                randFirstInsertMovesSum += hiFirstToLastMoves.get(insertNum);
+            }
+            expectedRandFirstInsertMoves.add(randFirstInsertMovesSum/n);
+            
+            double posExpectedMovesSum = 0;
+            for(int maxNumPos=0; maxNumPos<n; maxNumPos++) {
+                double expectedLoMoves = expectedSortMoves.get(maxNumPos);
+                double hiToLoSortedExpectedMovesSum = 0;
+                for(int hiPos=maxNumPos+1; hiPos<n; hiPos++) {
+                    hiToLoSortedExpectedMovesSum += 1+expectedRandFirstInsertMoves.get(hiPos);
+                }
+                posExpectedMovesSum += expectedLoMoves+hiToLoSortedExpectedMovesSum;
+            }
+            expectedSortMoves.add(posExpectedMovesSum/n);
+        }
+        
+        System.out.println(expectedSortMoves.get(30));   
+    }
+}
