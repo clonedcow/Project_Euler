@@ -1,0 +1,42 @@
+import java.util.*;
+
+public class MyClass {
+    public static void main(String args[]) {
+        // long squareSum = 0;
+        // for(long base=4; base<=100; base++) {
+        //     long square = base*base;
+        //     if(canSplitNum(base, square)) {
+        //         System.out.println(square);
+        //         squareSum += square;
+        //     }
+        // }
+        // System.out.println(squareSum);
+        
+        canSplitNum(100,100100);
+    }
+    
+    private static boolean canSplitNum(long sum, long numToSplit) {
+        System.out.println(sum+","+numToSplit);
+        if(numToSplit<10) {
+            return sum == numToSplit;
+        }
+        long splitMask = 10;
+        while(splitMask<=numToSplit) {
+            // System.out.println("asdf"+splitMask+","+numToSplit);
+            long leftSplit = numToSplit/splitMask;
+            if(leftSplit>sum) {
+                splitMask*=10;
+                continue;
+            }
+            
+            long rightSplit = numToSplit%splitMask;
+            if(canSplitNum(sum-leftSplit, rightSplit)) {
+                System.out.println("done");
+                return true;
+            }
+            splitMask*=10;
+        }
+        System.out.println("done");
+        return false;
+    }
+}
