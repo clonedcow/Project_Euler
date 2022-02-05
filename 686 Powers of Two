@@ -1,0 +1,15 @@
+public class MyClass {
+    public static void main(String args[]) {
+        long pow = 100000000000000000L;
+        long exp = 0;
+        int matches = 0;
+        
+        while(matches<678910) {
+            exp++;
+            pow*=2;
+            if(pow>=1000000000000000000L) pow/=10;
+            if(pow/1000000000000000L == 123) matches++;
+        }
+        System.out.println(exp);
+    }
+}
