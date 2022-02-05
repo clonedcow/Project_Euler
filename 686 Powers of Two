@@ -1,3 +1,5 @@
+// should use logs
+
 public class MyClass {
     public static void main(String args[]) {
         long pow = 100000000000000000L;
