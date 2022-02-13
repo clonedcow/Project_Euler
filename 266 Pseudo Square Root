@@ -1,0 +1,42 @@
+import java.lang.Math;
+import java.util.*;
+
+public class MyClass {
+    public static void main(String args[]) {
+        genPrimes(190);
+        primeLogs = new ArrayList<>();
+        primeLogsSums = new ArrayList<>();
+        double primeLogsSum = 0;
+        for(int prime : primes) {
+            double primeLog = Math.log(prime);
+            primeLogs.add(primeLog);
+            primeLogsSum += primeLog;
+            primeLogsSums.add(primeLogsSum);
+        }
+        
+        for(double sum : primeLogsSums) {
+            System.out.println(sum);
+        }
+    }
+    
+    static List<Double> primeLogs;
+    static List<Double> primeLogsSums;
+    static List<Integer> primes;
+    static Set<Integer> primeSet;
+    
+    private static void genPrimes(int maxPrime) {
+        primes = new ArrayList<>();
+        primeSet = new HashSet<>();
+        boolean[] isComposite = new boolean[maxPrime+1];
+    
+        for(int testPrime = 2; testPrime<=maxPrime; testPrime++) {
+            if(!isComposite[testPrime]) {
+                primes.add(testPrime);
+                primeSet.add(testPrime);
+                for(long marker = (long)testPrime*(long)testPrime; marker<=maxPrime; marker+=testPrime) {
+                    isComposite[(int)marker] = true;
+                }
+            }
+        }
+    }
+}
