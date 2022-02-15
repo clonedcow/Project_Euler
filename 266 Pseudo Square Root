@@ -3,7 +3,7 @@ import java.util.*;
 
 public class MyClass {
     public static void main(String args[]) {
-        genPrimes(190);
+        genPrimes(160);
         primeLogs = new ArrayList<>();
         primeLogsSums = new ArrayList<>();
         double primeLogsSum = 0;
@@ -14,11 +14,56 @@ public class MyClass {
             primeLogsSums.add(primeLogsSum);
         }
         
-        for(double sum : primeLogsSums) {
-            System.out.println(sum);
+        // for(double sum : primeLogsSums) {
+        //     System.out.println(sum);
+        // }
+        
+        targetLog = primeLogsSums.get(primes.size()-1)/2;
+        System.out.println(targetLog);
+        
+        findClosestSumToTarget(0, primes.size()-1, new HashSet<>());
+        long psrMod = 1;
+        for(int prime : bestPrimes) {
+            psrMod = psrMod*prime%10000000000000000L;
+        }
+        System.out.println(closestSum);
+        System.out.println(psrMod);
+    }
+    
+    private static void findClosestSumToTarget(double currentSum, int primeIndex, Set<Integer> usedPrimes) {
+        if(primeIndex == -1) {
+            if(currentSum > closestSum) {
+                closestSum = currentSum;
+                bestPrimes = new HashSet<>();
+                bestPrimes.addAll(usedPrimes);
+            }
+            return;
+        }
+        double currentPrimeLogsSum = primeLogsSums.get(primeIndex);
+        if(currentSum+currentPrimeLogsSum <= targetLog) {
+            if(currentSum+currentPrimeLogsSum > closestSum) {
+                closestSum = currentSum+currentPrimeLogsSum;
+                bestPrimes = new HashSet<>();
+                bestPrimes.addAll(usedPrimes);
+                for(int i=0; i<=primeIndex; i++) bestPrimes.add(primes.get(primeIndex));
+            }
+            return;
+        }
+        
+        findClosestSumToTarget(currentSum, primeIndex-1, usedPrimes);
+
+        double currentPrimeLog = primeLogs.get(primeIndex);
+        if(currentSum+currentPrimeLog <= targetLog) {
+            int currentPrime = primes.get(primeIndex);
+            usedPrimes.add(currentPrime);
+            findClosestSumToTarget(currentSum+currentPrimeLog, primeIndex-1, usedPrimes);
+            usedPrimes.remove(currentPrime);
         }
     }
     
+    static Set<Integer> bestPrimes;
+    static double closestSum = 0;
+    static double targetLog;
     static List<Double> primeLogs;
     static List<Double> primeLogsSums;
     static List<Integer> primes;
