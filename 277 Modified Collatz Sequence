@@ -1,3 +1,5 @@
+import java.util.*;
+
 public class MyClass {
     public static void main(String args[]) {
         String pattern = "UDDDUdddDDUDDddDdDddDDUDDdUUDd";
@@ -27,16 +29,63 @@ public class MyClass {
         }
         
         System.out.println("("+xCoefficient+"x+"+constant+")/"+denominator);
-    }
-}
-
-public class MyClass {
-    public static void main(String[] args) {
-        for(long n = 1000000L; n<1000100000000000L; n++) {
-            // if((n*4194304L-21110037246199L)%205891132094649L == 0) {
-            if((n*256L-87L)%59049L == 0) {
-                System.out.println(n);
-                return;
+        // (205891132094649x+21110037246199)/4194304
+        
+        // 277 Eulercoin
+        long BASE = xCoefficient%denominator;
+        long MOD =  denominator;
+        
+        long oldMult = 0;
+        long oldMod = MOD;
+        long newMult = 1;
+        long newMod = BASE;
+        
+        List<Long> mults = new ArrayList<>();
+        mults.add(1L);
+        List<Long> mods = new ArrayList<>();
+        mods.add(BASE);
+        while(newMod!=1) {
+            long newestMod = (oldMod/newMod+1)*newMod-oldMod;
+            long newestMult = (oldMod/newMod+1)*newMult-oldMult;
+            System.out.println(newestMult+", "+newestMod);
+            
+            oldMod = newMod;
+            oldMult = newMult;
+            newMod = newestMod;
+            newMult = newestMult;
+            mods.add(newestMod);
+            mults.add(newestMult);
+        }
+        
+        long x = 0;
+        long rem = denominator-(constant%denominator);
+        int multInd = 1;
+        
+        while(rem!=0) {
+            long mult = mults.get(multInd);
+            long mod = mods.get(multInd);
+            if(rem>=mod) {
+                x += (rem/mod)*mult;
+                rem -= (rem/mod)*mod;
+            }
+            multInd++;
+        }
+        
+        System.out.println(x);
+        
+        long ans = 1000000000000000L/denominator*denominator+x;
+        System.out.println(ans);
+        
+        for(int i=0; i<30; i++) {
+            long mod = ans%3L;
+                
+            if(mod==0L) {
+                ans/=3; System.out.print("D");
+            } else if(mod==1L) {
+                ans = (4*ans+2)/3; System.out.print("U");
+            }
+            else{
+                ans = (2*ans-1)/3; System.out.print("d");
             }
         }
     }
