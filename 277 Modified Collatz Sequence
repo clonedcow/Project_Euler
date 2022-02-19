@@ -5,34 +5,34 @@ public class MyClass {
         String pattern = "UDDDUdddDDUDDddDdDddDDUDDdUUDd";
         // String pattern = "DdDddUUdDD";
         
-        // (ax+c)/d
-        long xCoefficient = 1;
+        // (a*end+c)/d
+        long endCoefficient = 1;
         long constant = 0;
         long denominator = 1;
         for(int i = pattern.length()-1; i>=0; i--) {
             switch(pattern.charAt(i)) {
                 case 'D':
-                    xCoefficient*=3;
+                    endCoefficient*=3;
                     constant*=3;
                     break;
                 case 'U':
-                    xCoefficient*=3;
+                    endCoefficient*=3;
                     constant = 3*constant-2*denominator;
                     denominator*=4;
                     break;
                 case 'd':
-                    xCoefficient*=3;
+                    endCoefficient*=3;
                     constant = 3*constant+denominator;
                     denominator*=2;
                     break;
             }
         }
         
-        System.out.println("("+xCoefficient+"x+"+constant+")/"+denominator);
+        System.out.println("("+endCoefficient+"*end+"+constant+")/"+denominator);
         // (205891132094649x+21110037246199)/4194304
         
         // 277 Eulercoin
-        long BASE = xCoefficient%denominator;
+        long BASE = endCoefficient%denominator;
         long MOD =  denominator;
         
         long oldMult = 0;
@@ -57,7 +57,7 @@ public class MyClass {
             mults.add(newestMult);
         }
         
-        long x = 0;
+        long sol = 0;
         long rem = denominator-(constant%denominator);
         int multInd = 1;
         
@@ -65,27 +65,37 @@ public class MyClass {
             long mult = mults.get(multInd);
             long mod = mods.get(multInd);
             if(rem>=mod) {
-                x += (rem/mod)*mult;
+                sol += (rem/mod)*mult;
                 rem -= (rem/mod)*mod;
             }
             multInd++;
         }
         
-        System.out.println(x);
+        System.out.println("equation solution = " + sol);
         
-        long ans = 1000000000000000L/denominator*denominator+x;
-        System.out.println(ans);
+        // overflows
+        // long endMin = (1000000000000000L*denominator-constant)/endCoefficient;
+        // System.out.println("minimum ending number = " + endMin);
         
+        // long end = endMin/denominator*denominator+sol;
+        // System.out.println("end = " + end);
+        // 22937809
+        
+        // long ans = (end*endCoefficient+constant)/denominator
+        // 1125977393124310
+        
+        long ans = 1125977393124310L;
         for(int i=0; i<30; i++) {
-            long mod = ans%3L;
-                
-            if(mod==0L) {
-                ans/=3; System.out.print("D");
-            } else if(mod==1L) {
-                ans = (4*ans+2)/3; System.out.print("U");
-            }
-            else{
-                ans = (2*ans-1)/3; System.out.print("d");
+            long mod = ans%3;
+            if(mod == 0) {
+                ans/=3;
+                System.out.print("D");
+            } else if(mod == 1) {
+                ans = (4*ans+2)/3;
+                System.out.print("U");
+            } else {
+                ans = (2*ans-1)/3;
+                System.out.print("d");
             }
         }
     }
