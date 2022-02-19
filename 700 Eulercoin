@@ -1,14 +1,23 @@
-long MULT = 1504170715041707L;
-long MOD =  4503599627370517L;
-
-long oldEulerCoin = MOD;
-long newEulerCoin = MULT;
-long eulerCoinSum = MULT;
-while(newEulerCoin!=1) {
-    long newestEulerCoin = (oldEulerCoin/newEulerCoin+1)*newEulerCoin-oldEulerCoin;
-    System.out.println(newestEulerCoin);
-    eulerCoinSum += newestEulerCoin;
-    oldEulerCoin = newEulerCoin;
-    newEulerCoin = newestEulerCoin;
+public class MyClass {
+    public static void main(String args[]) {
+        long BASE = 1504170715041707L;
+        long MOD =  4503599627370517L;
+        
+        long oldMult = 0;
+        long oldEulerCoin = MOD;
+        long newMult = 1;
+        long newEulerCoin = BASE;
+        long eulerCoinSum = BASE;
+        while(newEulerCoin!=1) {
+            long newestEulerCoin = (oldEulerCoin/newEulerCoin+1)*newEulerCoin-oldEulerCoin;
+            long newestMult = (oldEulerCoin/newEulerCoin+1)*newMult-oldMult;
+            System.out.println(newestMult+", "+newestEulerCoin);
+            eulerCoinSum += newestEulerCoin;
+            oldEulerCoin = newEulerCoin;
+            oldMult = newMult;
+            newEulerCoin = newestEulerCoin;
+            newMult = newestMult;
+        }
+        System.out.println(eulerCoinSum);
+    }
 }
-System.out.println(eulerCoinSum);
