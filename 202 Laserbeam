@@ -4,3 +4,42 @@ it is the same as if the triangle were reflected across that line and the laser 
 Then, you can fill a trianglular grid where each coordinate is marked as A, B, or C.
 Furthermore, you can skew the triangles so they're 45-45-90 triangles with A(0,1), B(1,1), C(0,0).
 For each path, the laser is "reflected" when it hits a vertical axis, horizontal axis, or passes a line with slope 1.
+
+Therefore if we exit at (x,y) where x,y>0 and y>x and gcd(x,y)=1(or else we exit too early), we've reflected (x-1)+(y-1)+(y-x-1)=2y-3 times.
+The coordinates of reflected C are any points on y=-x+3d, where d is an integer.
+12017639147 = 2y-3
+y = 6008819575
+y%3 = -2, so we test x=2,5,8,...,6008819573, only need to test half of them up to 3004409788 because if gcd(x,y)=1, then gcd(y-x,y)=1
+
+
+public class MyClass {
+    public static void main(String args[]) {
+      long paths = 0;
+      for(long i=2; i<30044097L; i+=3) {
+        //   if(gcd(6008819575L, i) == 1) {
+        if((i%5)==0 && (i%11)==0 && (i%17)==0 && (i%23)==0 && (i%29)==0 && (i%41)==0){ 
+            // && (i%47)==0) {
+              paths+=2;
+          }
+      }
+      System.out.println(paths);
+    
+    // 500002
+    //   long paths = 0;
+    //   for(long i=2; i<500002L; i+=3) {
+    //       if(gcd(500002L, i) == 1) {
+    //           paths++;
+    //       }
+    //   }
+    //   System.out.println(paths);
+    }
+    
+    private static long gcd(long hi, long lo) {
+        while(hi%lo!=0) {
+            long tmp = hi%lo;
+            hi = lo;
+            lo = tmp;
+        }
+        return lo;
+    }
+}
