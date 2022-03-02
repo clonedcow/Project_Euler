@@ -15,10 +15,9 @@ y%3 = -2, so we test x=2,5,8,...,6008819573, only need to test half of them up t
 public class MyClass {
     public static void main(String args[]) {
       long paths = 0;
-      for(long i=2; i<30044097L; i+=3) {
+      for(long i=2; i<3004409788L; i+=3) {
         //   if(gcd(6008819575L, i) == 1) {
-        if((i%5)==0 && (i%11)==0 && (i%17)==0 && (i%23)==0 && (i%29)==0 && (i%41)==0){ 
-            // && (i%47)==0) {
+            if(i%5!=0 && i%11!=0 && i%17!=0 && i%23!=0 && i%29!=0 && i%41!=0 && i%47!=0){
               paths+=2;
           }
       }
